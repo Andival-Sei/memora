@@ -13,6 +13,7 @@ Memora — персональная операционная система дл
 - [ADR-0001: платформа и стек](docs/architecture/ADR-0001-platform-and-stack.md)
 - [Дорожная карта](docs/roadmap.md)
 - [Визуальная и motion-система](docs/design/motion-system.md)
+- [Правила работы AI-агентов](AGENTS.md)
 
 ## Коротко о выбранном направлении
 
@@ -32,6 +33,22 @@ Memora — персональная операционная система дл
 3. AI предлагает действия, но изменение данных подтверждает пользователь.
 4. Анимации объясняют изменение состояния и не ухудшают доступность.
 5. Сначала законченные вертикальные срезы, затем новые модули.
+
+## AI-разработка
+
+Любой AI-агент начинает с [AGENTS.md](AGENTS.md). Подробный процесс, task packet,
+model gate и quality gates находятся в [`docs/ai`](docs/ai/WORKFLOW.md).
+
+- [Спецификация AI engineering system](docs/superpowers/specs/2026-09-18-ai-engineering-system-design.md)
+- [Implementation plan](docs/superpowers/plans/2026-09-18-ai-engineering-system.md)
+- [Когда задачу можно передать Luna](docs/ai/MODEL_ROUTING.md)
+- [Definition of Done](docs/ai/DEFINITION_OF_DONE.md)
+
+Проверка целостности AI-инструкций на Windows:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-ai-governance.ps1
+```
 
 ## Следующий шаг
 
