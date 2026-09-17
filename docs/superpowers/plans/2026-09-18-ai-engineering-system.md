@@ -258,14 +258,14 @@ git diff
 
 Expected: verifier и diff check проходят; diff содержит только заявленные файлы.
 
-- [ ] **Step 3: создать атомарный коммит**
+- [x] **Step 3: создать атомарный коммит**
 
 ```powershell
 git add -- AGENTS.md README.md docs/ai scripts/verify-ai-governance.ps1 docs/superpowers/plans/2026-09-18-ai-engineering-system.md
 git commit -m "docs(ai): внедрить правила работы AI-агентов"
 ```
 
-- [ ] **Step 4: безопасно отправить `main`**
+- [x] **Step 4: безопасно отправить `main`**
 
 ```powershell
 git fetch origin
