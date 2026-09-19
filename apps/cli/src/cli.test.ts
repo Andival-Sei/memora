@@ -90,4 +90,21 @@ describe("memora CLI", () => {
     expect(exitCode).toBe(2);
     expect(errors.join("\n")).toContain("--path");
   });
+
+  it("starts the local MCP transport through the CLI", async () => {
+    const {io, output} = createIo();
+    let started = false;
+    const exitCode = await runCli(["mcp", "serve", "--stdio", "--json"], {
+      scope,
+      useCases: baseUseCases,
+      startMcp: () => {
+        started = true;
+        return Promise.resolve();
+      }
+    }, io);
+
+    expect(exitCode).toBe(0);
+    expect(started).toBe(true);
+    expect(output).toHaveLength(0);
+  });
 });

@@ -1,6 +1,8 @@
+import {spawn} from "node:child_process";
 import {randomUUID} from "node:crypto";
 import {readFile, realpath, stat} from "node:fs/promises";
-import {pathToFileURL} from "node:url";
+import {dirname, resolve} from "node:path";
+import {fileURLToPath, pathToFileURL} from "node:url";
 import {
   ApplicationError,
   createDocumentAgentUseCases,
@@ -21,6 +23,32 @@ export interface CliIo {
 export interface CliContext {
   scope: DocumentAgentScope;
   useCases: DocumentAgentUseCases;
+  startMcp?: () => Promise<void>;
+}
+
+function startLocalMcpProcess(): Promise<void> {
+  const cliDirectory = dirname(fileURLToPath(import.meta.url));
+  const repositoryRoot = resolve(cliDirectory, "../../..");
+  const tsxEntry = resolve(repositoryRoot, "node_modules/tsx/dist/cli.mjs");
+  const serverEntry = resolve(repositoryRoot, "apps/mcp/src/server.ts");
+  const child = spawn(process.execPath, [tsxEntry, serverEntry], {
+    cwd: repositoryRoot,
+    env: process.env,
+    stdio: "inherit"
+  });
+
+  return new Promise((resolveProcess, reject) => {
+    child.once("error", reject);
+    child.once("exit", (code, signal) => {
+      if (signal) {
+        reject(new Error(`MCP server stopped by ${signal}.`));
+      } else if (code === 0) {
+        resolveProcess();
+      } else {
+        reject(new Error(`MCP server exited with code ${code ?? "unknown"}.`));
+      }
+    });
+  });
 }
 
 class CliUsageError extends Error {
@@ -110,6 +138,13 @@ export async function runCli(args: string[], context: CliContext, io: CliIo): Pr
   try {
     const [group, ...rest] = args;
     if (group === "document") return await runDocumentCommand(rest, context, io);
+    if (group === "mcp") {
+      if (rest[0] !== "serve" || !rest.includes("--stdio") || !context.startMcp) {
+        throw new CliUsageError("Используйте: memora mcp serve --stdio.");
+      }
+      await context.startMcp();
+      return 0;
+    }
     if (group === "doctor") {
       const types = await context.useCases.listTypes(context.scope);
       printValue({status: "ok", documentTypes: types.length}, json, io);
@@ -176,7 +211,8 @@ export function createDefaultCliContext(): CliContext {
       }),
       clock: {now: () => new Date()},
       idGenerator: (prefix) => `${prefix}-${randomUUID()}`
-    })
+    }),
+    startMcp: startLocalMcpProcess
   };
 }
 
