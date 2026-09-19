@@ -1,15 +1,19 @@
 {
-  "name": "@memora/cli",
+  "name": "@memora/mcp",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "bin": {"memora": "./dist/main.js"},
+  "bin": {"memora-mcp": "./dist/server.js"},
   "scripts": {
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "build": "tsc --noEmit false --outDir dist --declaration false"
   },
-  "dependencies": {"@memora/application": "*"},
+  "dependencies": {
+    "@memora/application": "*",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "latest"
+  },
   "devDependencies": {"@types/node": "latest", "vitest": "latest"}
 }

@@ -106,6 +106,7 @@ never pretends that an unprovisioned OCR provider populated fields.
 
 - Create `apps/mcp/package.json`, `apps/mcp/tsconfig.json`, `apps/mcp/src/server.ts`, `apps/mcp/src/tools.ts`, `apps/mcp/src/resources.ts`, `apps/mcp/src/mcp.test.ts`, `apps/mcp/README.md`.
 - Modify root package/lockfile and `.codex/config.example.toml`.
+- Create `docs/integrations/codex-chatgpt-mcp.md` with the verified local setup and the remote/web limitation.
 
 **Interfaces:**
 

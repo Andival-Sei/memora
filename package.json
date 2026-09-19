@@ -20,12 +20,13 @@
     "db:migrate": "npm run db:migrate --workspace=@memora/db"
   },
   "devDependencies": {
-    "@vercel/config": "latest",
     "@eslint/js": "^9.39.0",
     "@types/node": "latest",
+    "@vercel/config": "latest",
     "eslint": "^9.39.0",
     "eslint-config-next": "latest",
     "globals": "latest",
+    "tsx": "^4.23.13",
     "turbo": "latest",
     "typescript": "latest",
     "typescript-eslint": "latest"
