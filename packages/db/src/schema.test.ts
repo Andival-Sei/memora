@@ -1,6 +1,6 @@
 import {getTableConfig} from "drizzle-orm/pg-core";
 import {describe, expect, it} from "vitest";
-import {documentAuditEvents, documents, users, vaults} from "./schema";
+import {documentAssets, documentAuditEvents, documentRecords, documents, users, vaults} from "./schema";
 
 describe("identity storage boundary", () => {
   it("uses stable UUID keys and unique Clerk identities", () => {
@@ -41,5 +41,25 @@ describe("identity storage boundary", () => {
       "result"
     ]));
     expect(auditConfig.columns.map((column) => column.name)).not.toContain("payload");
+  });
+
+  it("stores typed records and private multi-page assets with idempotency constraints", () => {
+    const recordConfig = getTableConfig(documentRecords);
+    expect(recordConfig.columns.find((column) => column.name === "vault_id")?.notNull).toBe(true);
+    expect(recordConfig.columns.find((column) => column.name === "document_type")?.notNull).toBe(true);
+    expect(recordConfig.columns.find((column) => column.name === "schema_version")?.notNull).toBe(true);
+    expect(recordConfig.columns.find((column) => column.name === "status")?.notNull).toBe(true);
+    expect(recordConfig.foreignKeys).toHaveLength(1);
+
+    const assetConfig = getTableConfig(documentAssets);
+    expect(assetConfig.columns.find((column) => column.name === "blob_path")?.notNull).toBe(true);
+    expect(assetConfig.columns.find((column) => column.name === "sha256")?.notNull).toBe(true);
+    expect(assetConfig.columns.find((column) => column.name === "page_index")?.notNull).toBe(true);
+    expect(assetConfig.uniqueConstraints.map((constraint) => constraint.name)).toEqual(expect.arrayContaining([
+      "document_assets_record_page_unique",
+      "document_assets_record_sha256_unique",
+      "document_assets_blob_path_unique"
+    ]));
+    expect(assetConfig.foreignKeys).toHaveLength(2);
   });
 });

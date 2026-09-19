@@ -10,5 +10,6 @@
     "test": "vitest run --passWithNoTests",
     "build": "tsc --noEmit"
   },
+  "dependencies": {"@memora/contracts": "*"},
   "devDependencies": {"vitest": "latest"}
 }

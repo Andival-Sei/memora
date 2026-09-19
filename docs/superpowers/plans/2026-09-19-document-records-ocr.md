@@ -21,8 +21,10 @@
 - `packages/domain/src/document-records.ts`
 - `packages/domain/src/document-records.test.ts`
 - `packages/domain/src/index.ts`
+- `packages/domain/package.json`
 - `packages/db/src/schema.ts`
 - `packages/db/src/document-records-repository.ts`
+- `packages/db/src/index.ts`
 - `packages/db/src/schema.test.ts`
 - `packages/db/drizzle/*` generated migration/meta
 - `packages/db/package.json`

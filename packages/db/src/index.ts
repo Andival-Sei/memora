@@ -19,3 +19,4 @@ export function getDb() {
 
 export {schema};
 export {createDocumentRepository} from "./documents-repository";
+export {createDocumentRecordRepository} from "./document-records-repository";
