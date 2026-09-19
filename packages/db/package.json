@@ -13,6 +13,7 @@
     "db:migrate": "dotenv -e ../../.env.local -- drizzle-kit migrate"
   },
   "dependencies": {
+    "@memora/domain": "*",
     "@vercel/functions": "latest",
     "drizzle-orm": "latest",
     "pg": "latest"

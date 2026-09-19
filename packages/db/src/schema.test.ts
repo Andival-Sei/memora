@@ -1,6 +1,6 @@
 import {getTableConfig} from "drizzle-orm/pg-core";
 import {describe, expect, it} from "vitest";
-import {users, vaults} from "./schema";
+import {documentAuditEvents, documents, users, vaults} from "./schema";
 
 describe("identity storage boundary", () => {
   it("uses stable UUID keys and unique Clerk identities", () => {
@@ -14,5 +14,32 @@ describe("identity storage boundary", () => {
     const owner = vaultConfig.columns.find((column) => column.name === "owner_id");
     expect(owner?.notNull).toBe(true);
     expect(vaultConfig.foreignKeys).toHaveLength(1);
+  });
+
+  it("keeps personal vaults unique and documents scoped to a vault", () => {
+    const vaultConfig = getTableConfig(vaults);
+    expect(vaultConfig.uniqueConstraints.map((constraint) => constraint.name)).toContain(
+      "vaults_owner_id_unique"
+    );
+
+    const documentConfig = getTableConfig(documents);
+    expect(documentConfig.columns.find((column) => column.name === "vault_id")?.notNull).toBe(true);
+    expect(documentConfig.columns.find((column) => column.name === "blob_path")?.notNull).toBe(true);
+    expect(documentConfig.uniqueConstraints.map((constraint) => constraint.name)).toContain(
+      "documents_blob_path_unique"
+    );
+    expect(documentConfig.foreignKeys).toHaveLength(1);
+  });
+
+  it("stores audit events without document payload columns", () => {
+    const auditConfig = getTableConfig(documentAuditEvents);
+    expect(auditConfig.columns.map((column) => column.name)).toEqual(expect.arrayContaining([
+      "vault_id",
+      "document_id",
+      "actor_clerk_id",
+      "action",
+      "result"
+    ]));
+    expect(auditConfig.columns.map((column) => column.name)).not.toContain("payload");
   });
 });
