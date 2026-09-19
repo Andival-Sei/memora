@@ -56,10 +56,10 @@
 
 ### Acceptance
 
-- domain tests зелёные с реальными функциями без provider mocks;
-- DB migration применена на Neon (`npm run db:migrate`);
-- queries требуют vault scope и не возвращают `blobPath` наружу;
-- cleanup и audit paths покрыты.
+- [x] domain tests зелёные с реальными функциями без provider mocks;
+- [x] DB migration применена на Neon (`npm run db:migrate`);
+- [x] queries требуют vault scope и не возвращают `blobPath` наружу;
+- [x] cleanup и audit paths покрыты.
 
 ### Verification/commit
 
@@ -99,10 +99,10 @@
 
 ### Acceptance
 
-- no public URL/path in JSON;
-- private originals stream directly with no redirect and no browser cache;
-- failed DB write cleans only its newly-created Blob;
-- `npm run check` and `npm audit --omit=dev --audit-level=high` pass.
+- [x] no public URL/path in JSON;
+- [x] private originals stream directly with no redirect and no browser cache;
+- [x] failed DB write cleans only its newly-created Blob;
+- [x] `npm run check` and `npm audit --omit=dev --audit-level=high` pass.
 
 ### Verification/commit
 
@@ -136,7 +136,7 @@
 
 ### Acceptance/commit
 
-- `npm run check`, keyboard/reduced-motion review and production preview smoke;
+- [x] `npm run check`, keyboard/reduced-motion review and production preview smoke;
 - Commit: `feat(documents): добавить локализованный экран документов`
 
 ## Completion gate

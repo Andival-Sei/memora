@@ -105,16 +105,16 @@ store. Transport не вызывает Drizzle или Vercel Blob напряму
 
 ## Acceptance criteria
 
-- [ ] validation tests покрывают valid PDF, MIME/magic mismatch, size boundary и
+- [x] validation tests покрывают valid PDF, MIME/magic mismatch, size boundary и
   filename normalization;
-- [ ] repository migration создаёт таблицы, FK, unique/index constraints и
+- [x] repository migration создаёт таблицы, FK, unique/index constraints и
   проходит на реальном Neon;
-- [ ] service tests доказывают owner scope, cleanup при metadata failure и
+- [x] service tests доказывают owner scope, cleanup при metadata failure и
   отсутствие private fields в public result;
-- [ ] API tests доказывают 401/400/413/201/list/404 и no-store headers;
-- [ ] production smoke доказывает public health и guest auth boundary; provider
+- [x] API tests доказывают 401/400/413/201/list/404 и no-store headers;
+- [x] production smoke доказывает public health и guest auth boundary; provider
   upload проверяется только после действующей auth-сессии;
-- [ ] `npm run check`, governance verifier, `npm audit --omit=dev` и
+- [x] `npm run check`, governance verifier, `npm audit --omit=dev` и
   `git diff --check` зелёные.
 
 ## Rollback
