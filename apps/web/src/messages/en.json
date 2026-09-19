@@ -10,5 +10,13 @@
     "stream": "Memory stream", "streamHint": "Connections and sources will be visible here.",
     "private": "Private by default", "navigation": "Primary navigation"
   },
+  "Documents": {
+    "eyebrow": "Memora / Personal vault", "title": "Documents",
+    "description": "Keep important PDFs private — originals are available only to you.",
+    "privateLabel": "Private", "chooseFile": "Choose PDF", "upload": "Upload",
+    "allowed": "PDF up to 10 MB", "empty": "No documents yet", "loading": "Loading documents…",
+    "uploading": "Saving…", "success": "Document saved", "download": "Download",
+    "error": "We could not save the document", "invalidFile": "Choose a PDF file"
+  },
   "Theme": {"label": "Theme", "light": "Light", "dark": "Dark", "system": "System"}
 }
