@@ -38,13 +38,13 @@
 
 ### Acceptance criteria
 
-- [ ] npm workspace и все quality scripts работают на Windows 11.
-- [ ] RU/EN routes и light/dark/system shell доступны без строковых дубликатов.
-- [ ] Product routes защищены Clerk, auth routes публичны.
-- [ ] Drizzle schema хранит owner/vault boundary и UUID identifiers.
-- [ ] Health не обращается к БД и не раскрывает конфигурацию.
-- [ ] Build, lint, typecheck, tests и governance verifier зелёные.
-- [ ] В Git отсутствуют секреты; preview deployment успешен.
+- [x] npm workspace и все quality scripts работают на Windows 11.
+- [x] RU/EN routes и light/dark/system shell доступны без строковых дубликатов.
+- [x] Product routes защищены Clerk, auth routes публичны.
+- [x] Drizzle schema хранит owner/vault boundary и UUID identifiers.
+- [x] Health не обращается к БД и не раскрывает конфигурацию.
+- [x] Build, lint, typecheck, tests и governance verifier зелёные.
+- [x] В Git отсутствуют секреты; preview deployment успешен.
 
 ### TDD evidence
 
@@ -69,3 +69,32 @@
 - Commit: `feat(foundation): создать рабочую основу приложения`
 - Evidence to report: tests/typecheck/lint/build, browser matrix, deployment URL,
   published SHA.
+
+## Task 2 — Auth redirect hardening
+
+### Contract
+
+- Goal: unauthenticated browser navigation получает локализованный sign-in,
+  а auth boundary не использует deprecated `createRouteMatcher`.
+- Class: bounded security/auth behavior
+- Model tier: A
+- Owner module: `apps/web/src/lib/auth` и `apps/web/src/proxy.ts`
+
+### Scope
+
+- Allowed files: `apps/web/src/lib/auth/**`, `apps/web/src/proxy.ts`,
+  `apps/web/src/lib/i18n/routing.ts`, этот plan и Foundation spec.
+- Out of scope: Clerk dashboard settings, account flows и database schema.
+
+### Acceptance criteria
+
+- [x] Public paths are exact and limited to localized sign-in/sign-up и health.
+- [x] Protected browser paths redirect to `/:locale/sign-in`.
+- [x] Health remains `200 {status:"ok"}` and API requests do not receive HTML
+  sign-in redirects.
+- [x] No Clerk deprecation warning from route matcher.
+
+### TDD evidence
+
+- RED: `npm test --workspace=@memora/web` fails because route policy is absent.
+- GREEN: the same command passes with RU/EN and fallback locale cases.

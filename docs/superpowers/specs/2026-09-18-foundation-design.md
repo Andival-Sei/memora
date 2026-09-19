@@ -29,6 +29,9 @@ Router приложением, реальными Vercel-интеграциям�
 
 - Все продуктовые маршруты, кроме sign-in/sign-up и health, защищает Clerk
   `proxy.ts`.
+- Гость, открывающий `/:locale` или другой продуктовый маршрут в браузере,
+  получает redirect на локальный `/:locale/sign-in`; API-контракты не
+  редиректят чувствительные запросы в HTML.
 - Client никогда не получает `CLERK_SECRET_KEY`, `DATABASE_URL` или
   `BLOB_READ_WRITE_TOKEN`.
 - `.env.local`, `.vercel` и любые env-варианты исключены из Git.
