@@ -74,6 +74,7 @@
 
 - `apps/web/src/lib/documents/blob-storage.ts`
 - `apps/web/src/lib/documents/blob-storage.test.ts`
+- `apps/web/src/lib/documents/service.ts`
 - `apps/web/src/app/api/documents/route.ts`
 - `apps/web/src/app/api/documents/route.test.ts`
 - `apps/web/src/app/api/documents/[id]/download/route.ts`
