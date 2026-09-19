@@ -76,7 +76,7 @@
 
 **Files:**
 
-- Create `apps/cli/package.json`, `apps/cli/tsconfig.json`, `apps/cli/src/main.ts`, `apps/cli/src/commands/document.ts`, `apps/cli/src/commands/doctor.ts`, `apps/cli/src/cli.test.ts`.
+- Create `apps/cli/package.json`, `apps/cli/tsconfig.json`, `apps/cli/src/main.ts`, `apps/cli/src/cli.test.ts`.
 - Modify root `package.json`, `turbo.json`, lockfile.
 - Do not modify provider adapters or Web routes.
 
@@ -87,6 +87,11 @@
 - `memora document inspect --record <id>`
 - `memora document verify-fixture --fixture <id> [--json]`
 - `memora mcp serve --stdio`
+
+The first local CLI composition uses a process-local store and a manual-only
+extractor. Persistent inspect/verify and real OCR are enabled only when the
+database-backed record adapter and provider gates are completed; the command
+never pretends that an unprovisioned OCR provider populated fields.
 
 - [ ] Step 1: RED test for outside-root path and stable exit code 2.
 - [ ] Step 2: RED test for stage output not containing absolute path or bytes.

@@ -1,0 +1,15 @@
+{
+  "name": "@memora/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {"memora": "./dist/main.js"},
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc --outDir dist --declaration false"
+  },
+  "dependencies": {"@memora/application": "*"},
+  "devDependencies": {"@types/node": "latest", "vitest": "latest"}
+}
