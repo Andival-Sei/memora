@@ -2,7 +2,8 @@
 
 Локальный server предоставляет Codex и desktop ChatGPT только capability-scoped
 tools. Он принимает файл из `MEMORA_STAGING_ROOT`, возвращает opaque handle и не
-возвращает путь, private URL или bytes. По умолчанию extraction помечен
+возвращает путь, private URL или bytes. При включённом test scope он также
+проверяет redacted fixture mapping. По умолчанию extraction помечен
 `manual-only`, потому что OCR provider ещё не provisioned.
 
 Сборка и запуск:

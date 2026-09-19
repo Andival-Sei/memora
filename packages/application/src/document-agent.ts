@@ -1,6 +1,11 @@
 import {createHash} from "node:crypto";
 import {basename, isAbsolute, relative, resolve, sep} from "node:path";
 import {z} from "zod";
+import {
+  verifyDocumentFixture,
+  type DocumentFixtureVerificationRequest,
+  type DocumentFixtureVerificationResult
+} from "./document-fixtures";
 
 export const documentTypeSchema = z.enum([
   "ru-passport",
@@ -198,7 +203,8 @@ export type DocumentAgentErrorCode =
   | "CONFIRMATION_EXPIRED"
   | "PAYLOAD_MISMATCH"
   | "USER_CONFIRMATION_REQUIRED"
-  | "EXTRACTION_FAILED";
+  | "EXTRACTION_FAILED"
+  | "INVALID_FIXTURE";
 
 const errorMessages: Record<DocumentAgentErrorCode, string> = {
   MISSING_SCOPE: "Недостаточно разрешений для этой операции.",
@@ -213,7 +219,8 @@ const errorMessages: Record<DocumentAgentErrorCode, string> = {
   CONFIRMATION_EXPIRED: "Срок действия подтверждения истёк.",
   PAYLOAD_MISMATCH: "Данные подтверждения изменились.",
   USER_CONFIRMATION_REQUIRED: "Требуется явное подтверждение пользователя.",
-  EXTRACTION_FAILED: "Не удалось подготовить черновик распознавания."
+  EXTRACTION_FAILED: "Не удалось подготовить черновик распознавания.",
+  INVALID_FIXTURE: "Fixture не прошёл проверку формата."
 };
 
 export class ApplicationError extends Error {
@@ -367,6 +374,7 @@ export interface DocumentAgentUseCases {
   runExtraction(scope: DocumentAgentScope, assetHandle: string): Promise<DocumentWorkspace>;
   createConfirmation(scope: DocumentAgentScope, input: ConfirmationRequest): Promise<ConfirmationDraft>;
   confirmFields(scope: DocumentAgentScope, input: {token: string; userConfirmed: boolean}): Promise<DocumentWorkspace>;
+  verifyFixture(scope: DocumentAgentScope, input: DocumentFixtureVerificationRequest): Promise<DocumentFixtureVerificationResult>;
 }
 
 function ensureScopeMatch(scope: DocumentAgentScope, actorId: string, vaultId: string): void {
@@ -536,6 +544,25 @@ export function createDocumentAgentUseCases(dependencies: DocumentAgentDependenc
       };
       await dependencies.store.saveWorkspace(confirmed);
       return copyWorkspace(confirmed);
+    },
+
+    async verifyFixture(scope, input) {
+      await Promise.resolve();
+      requireScope(scope, "documents:test");
+      const parsedDocumentType = documentTypeSchema.safeParse(input.manifest.documentType);
+      const fixtureId = input.manifest.fixtureId.trim();
+      const expectedKeys = input.manifest.fields.map((field) => field.key);
+      const actualKeys = input.actualFields.map((field) => field.key);
+      const hasDuplicate = (keys: string[]) => new Set(keys).size !== keys.length;
+      const hasInvalidConfidence = input.actualFields.some((field) => field.confidence !== null &&
+        (!Number.isFinite(field.confidence) || field.confidence < 0 || field.confidence > 1));
+      if (!parsedDocumentType.success || !fixtureId || fixtureId.length > 120 ||
+        input.manifest.fields.length > 100 || input.actualFields.length > 100 ||
+        expectedKeys.some((key) => !key.trim()) || actualKeys.some((key) => !key.trim()) ||
+        hasDuplicate(expectedKeys) || hasDuplicate(actualKeys) || hasInvalidConfidence) {
+        throw new ApplicationError("INVALID_FIXTURE");
+      }
+      return verifyDocumentFixture({...input.manifest, fixtureId, documentType: parsedDocumentType.data}, input.actualFields);
     }
   };
 }

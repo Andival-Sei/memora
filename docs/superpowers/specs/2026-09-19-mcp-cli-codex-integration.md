@@ -100,6 +100,10 @@ interface DocumentAgentUseCases {
     Promise<ConfirmationDraft>;
   confirmFields(scope: MemoraScope, input: {token: string; userConfirmed: boolean}):
     Promise<DocumentWorkspace>;
+  verifyFixture(scope: MemoraScope, input: {
+    manifest: DocumentFixtureManifest;
+    actualFields: DocumentFixtureActualField[];
+  }): Promise<DocumentFixtureVerificationResult>;
 }
 ```
 
@@ -135,6 +139,9 @@ interface DocumentAgentUseCases {
   fixture, сравнивает ожидаемые поля с draft mapping и возвращает field-level
   diff. Fixture не попадает в production vault и не подтверждает реальные
   документы.
+
+Application enforces the `documents:test` capability before running this
+deterministic verifier; transport layers never call the pure verifier directly.
 
 Resources:
 

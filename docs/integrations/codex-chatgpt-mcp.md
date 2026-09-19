@@ -5,7 +5,8 @@
 Локальный `@memora/mcp` — это стандартный MCP server по STDIO. Он доступен
 Codex CLI, IDE и desktop ChatGPT на том же компьютере. Он умеет перечислять
 типы документов, принимать явно выбранный файл из staging root, создавать
-opaque handle, показывать workspace и запускать review workflow.
+opaque handle, показывать workspace, запускать review workflow и проверять
+redacted fixture mapping при включённом test scope.
 
 Текущий extractor намеренно отвечает `manual-only`: OCR provider ещё не
 provisioned. Это позволяет проверить transport, scopes и приватность, но не
@@ -19,6 +20,7 @@ $env:MEMORA_ACTOR_ID = "local-codex"
 $env:MEMORA_VAULT_ID = "local-vault"
 $env:MEMORA_STAGING_ROOT = "C:\\Users\\<user>\\MemoraStaging"
 $env:MEMORA_ALLOW_CONFIRM = "0"
+$env:MEMORA_ALLOW_FIXTURES = "1"
 ```
 
 В staging root помещается только файл, который пользователь действительно
@@ -41,13 +43,14 @@ codex mcp list
 [mcp_servers.memora]
 command = "npx"
 args = ["--no-install", "tsx", "C:/dev/pet-projects/memora/apps/mcp/dist/server.js"]
-env_vars = ["MEMORA_ACTOR_ID", "MEMORA_VAULT_ID", "MEMORA_STAGING_ROOT", "MEMORA_ALLOW_CONFIRM"]
+env_vars = ["MEMORA_ACTOR_ID", "MEMORA_VAULT_ID", "MEMORA_STAGING_ROOT", "MEMORA_ALLOW_CONFIRM", "MEMORA_ALLOW_FIXTURES"]
 default_tools_approval_mode = "writes"
 enabled_tools = [
   "memora_document_list_types",
   "memora_document_stage_local_file",
   "memora_document_get_workspace",
   "memora_document_run_extraction",
+  "memora_document_verify_fixture",
   "memora_document_create_confirmation",
   "memora_document_confirm_fields"
 ]
@@ -77,7 +80,9 @@ Web upload выдаёт одноразовый `stagedAssetHandle`.
 2. Явно выбрать тестовый или пользовательский файл в staging root.
 3. Вызвать `memora_document_stage_local_file` с типом документа.
 4. Вызвать `memora_document_run_extraction` и показать draft/confidence/evidence.
-5. Исправить поля в UI/диффе и только после явного подтверждения пользователя
+5. Для synthetic/redacted набора вызвать `memora_document_verify_fixture`;
+   tool доступен только при `MEMORA_ALLOW_FIXTURES=1` и ничего не записывает.
+6. Исправить поля в UI/диффе и только после явного подтверждения пользователя
    вызвать `memora_document_create_confirmation`, затем `confirm_fields`.
 
 Подтверждение не включается автоматически: `MEMORA_ALLOW_CONFIRM=0` оставляет

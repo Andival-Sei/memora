@@ -2,6 +2,7 @@ import {z} from "zod";
 import {McpServer} from "@modelcontextprotocol/sdk/server/mcp.js";
 import {
   ApplicationError,
+  documentTypeSchema,
   type DocumentAgentScope,
   type DocumentAgentUseCases,
   type DocumentWorkspace
@@ -41,6 +42,25 @@ const confirmationChangeSchema = z.object({
   displayValue: z.string().max(1000).nullable()
 });
 
+const fixtureFieldSchema = z.object({
+  key: z.string().min(1).max(120),
+  expected: z.string().max(1000).nullable(),
+  valueType: z.enum(["text", "date", "number"]).default("text")
+});
+
+const fixtureManifestSchema = z.object({
+  fixtureId: z.string().min(1).max(120),
+  documentType: documentTypeSchema,
+  fields: z.array(fixtureFieldSchema).max(100)
+});
+
+const fixtureActualFieldSchema = z.object({
+  key: z.string().min(1).max(120),
+  displayValue: z.string().max(1000).nullable(),
+  normalizedValue: z.string().max(1000).nullable(),
+  confidence: z.number().min(0).max(1).nullable()
+});
+
 export function registerMemoraTools(server: McpServer, dependencies: MemoraMcpDependencies): void {
   const {scope, useCases} = dependencies;
 
@@ -49,6 +69,16 @@ export function registerMemoraTools(server: McpServer, dependencies: MemoraMcpDe
     description: "Return versioned document types and field schemas without private records.",
     annotations: {readOnlyHint: true, destructiveHint: false, idempotentHint: true}
   }, async () => safely(() => useCases.listTypes(scope)));
+
+  server.registerTool("memora_document_verify_fixture", {
+    title: "Verify document fixture fields",
+    description: "Compare redacted fixture expectations with extracted fields. This is test-only and never writes a document.",
+    inputSchema: {
+      manifest: fixtureManifestSchema,
+      actualFields: z.array(fixtureActualFieldSchema).max(100)
+    },
+    annotations: {readOnlyHint: true, destructiveHint: false, idempotentHint: true}
+  }, async ({manifest, actualFields}) => safely(() => useCases.verifyFixture(scope, {manifest, actualFields})));
 
   server.registerTool("memora_document_stage_local_file", {
     title: "Stage a local document asset",

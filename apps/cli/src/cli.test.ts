@@ -47,7 +47,13 @@ const baseUseCases: DocumentAgentUseCases = {
   }),
   runExtraction: () => baseUseCases.getWorkspace(scope, "record-1"),
   createConfirmation: () => Promise.resolve({token: "token-1", recordId: "record-1", changes: [], expiresAt: "2026-09-19T12:15:00.000Z"}),
-  confirmFields: () => baseUseCases.getWorkspace(scope, "record-1")
+  confirmFields: () => baseUseCases.getWorkspace(scope, "record-1"),
+  verifyFixture: () => Promise.resolve({
+    fixtureId: "fixture-1",
+    documentType: "other" as const,
+    fields: [],
+    summary: {expectedCount: 0, actualCount: 0, matchedCount: 0, missingCount: 0, extraCount: 0, mismatchedCount: 0}
+  })
 };
 
 describe("memora CLI", () => {

@@ -1,7 +1,7 @@
 [mcp_servers.memora]
 command = "npx"
 args = ["--no-install", "tsx", "C:/dev/pet-projects/memora/apps/mcp/dist/server.js"]
-env_vars = ["MEMORA_ACTOR_ID", "MEMORA_VAULT_ID", "MEMORA_STAGING_ROOT", "MEMORA_ALLOW_CONFIRM"]
+env_vars = ["MEMORA_ACTOR_ID", "MEMORA_VAULT_ID", "MEMORA_STAGING_ROOT", "MEMORA_ALLOW_CONFIRM", "MEMORA_ALLOW_FIXTURES"]
 default_tools_approval_mode = "writes"
 startup_timeout_sec = 20
 tool_timeout_sec = 60

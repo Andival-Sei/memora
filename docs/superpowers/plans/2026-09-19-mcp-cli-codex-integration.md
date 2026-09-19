@@ -126,7 +126,7 @@ never pretends that an unprovisioned OCR provider populated fields.
 **Files:**
 
 - Create `packages/application/src/document-fixtures.ts`, `packages/application/src/document-fixtures.test.ts`, `docs/ai/DOCUMENT_MCP_EVALS.md`, `fixtures/documents/.gitkeep`.
-- Modify Task 1 exports only.
+- Modify Task 1 exports and the application use-case boundary only.
 
 **Interfaces:**
 
@@ -138,6 +138,31 @@ never pretends that an unprovisioned OCR provider populated fields.
 - [ ] Step 3: GREEN and record baseline metrics; no real passport data.
 - [ ] Step 4: document how a user-approved redacted fixture is added and removed.
 - [ ] Step 5: commit `test(ai): добавить eval-контур полей документов`.
+
+### Task 4b: expose fixture verification through the local MCP transport
+
+**Files:**
+
+- Modify `packages/application/src/document-agent.ts` and
+  `packages/application/src/document-agent.test.ts` for the `documents:test`
+  capability boundary.
+- Modify `apps/mcp/src/tools.ts` and `apps/mcp/src/mcp.test.ts`.
+- Modify `.codex/config.example.toml`, `apps/mcp/README.md` and
+  `docs/integrations/codex-chatgpt-mcp.md`.
+- Update this spec/plan when the public application contract changes.
+
+**Interfaces:**
+
+- `DocumentAgentUseCases.verifyFixture(scope, {manifest, actualFields})`.
+- `memora_document_verify_fixture` is read-only/idempotent, validates the
+  manifest and actual field confidence, and is callable only with
+  `documents:test`.
+
+- [ ] Step 1: RED MCP contract test for missing tool/scope.
+- [ ] Step 2: implement application capability check and Zod transport schema.
+- [ ] Step 3: GREEN application/MCP targeted tests and Inspector tool listing.
+- [ ] Step 4: run full quality/security gates and commit
+  `feat(mcp): добавить проверку fixture через MCP`.
 
 ### Task 5: remote MCP/tunnel and ChatGPT connection
 

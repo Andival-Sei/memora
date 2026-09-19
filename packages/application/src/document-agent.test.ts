@@ -7,6 +7,7 @@ import {
   type DocumentAgentScope,
   type LocalFileReader
 } from "./document-agent";
+import type {DocumentFixtureManifest} from "./document-fixtures";
 
 const scope: DocumentAgentScope = {
   actorId: "actor-1",
@@ -175,5 +176,22 @@ describe("document agent application boundary", () => {
       ...scope,
       vaultId: "vault-2"
     }, staged.recordId)).rejects.toBeInstanceOf(ApplicationError);
+  });
+
+  it("allows fixture verification only with the test capability", async () => {
+    const useCases = createUseCases();
+    const manifest: DocumentFixtureManifest = {
+      fixtureId: "redacted-001",
+      documentType: "other",
+      fields: [{key: "title", expected: "Synthetic value"}]
+    };
+    const actualFields = [{key: "title", displayValue: "Synthetic value", normalizedValue: "Synthetic value", confidence: 0.9}];
+
+    await expect(useCases.verifyFixture(scope, {manifest, actualFields})).rejects.toMatchObject({code: "MISSING_SCOPE"});
+    const result = await useCases.verifyFixture({
+      ...scope,
+      scopes: new Set([...scope.scopes, "documents:test"])
+    }, {manifest, actualFields});
+    expect(result.summary).toMatchObject({matchedCount: 1, missingCount: 0, extraCount: 0});
   });
 });

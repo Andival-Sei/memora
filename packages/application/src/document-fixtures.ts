@@ -21,6 +21,11 @@ export interface DocumentFixtureActualField {
   confidence: number | null;
 }
 
+export interface DocumentFixtureVerificationRequest {
+  manifest: DocumentFixtureManifest;
+  actualFields: readonly DocumentFixtureActualField[];
+}
+
 export type DocumentFixtureFieldReason = "matched" | "missing" | "extra" | "mismatch";
 
 export interface DocumentFixtureFieldResult {

@@ -48,11 +48,19 @@ const useCases: DocumentAgentUseCases = {
     warnings: ["manual-only"]
   }),
   createConfirmation: () => Promise.reject(new ApplicationError("MISSING_SCOPE")),
-  confirmFields: () => Promise.reject(new ApplicationError("MISSING_SCOPE"))
+  confirmFields: () => Promise.reject(new ApplicationError("MISSING_SCOPE")),
+  verifyFixture: (currentScope) => currentScope.scopes.has("documents:test")
+    ? Promise.resolve({
+      fixtureId: "fixture-1",
+      documentType: "other" as const,
+      fields: [],
+      summary: {expectedCount: 0, actualCount: 0, matchedCount: 0, missingCount: 0, extraCount: 0, mismatchedCount: 0}
+    })
+    : Promise.reject(new ApplicationError("MISSING_SCOPE"))
 };
 
-async function connectTestServer() {
-  const server = createMemoraMcpServer({scope, useCases});
+async function connectTestServer(currentScope = scope) {
+  const server = createMemoraMcpServer({scope: currentScope, useCases});
   const client = new Client({name: "memora-test-client", version: "0.1.0"});
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
   await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
@@ -70,6 +78,7 @@ describe("Memora MCP server", () => {
       "memora_document_stage_local_file",
       "memora_document_get_workspace",
       "memora_document_run_extraction",
+      "memora_document_verify_fixture",
       "memora_document_confirm_fields"
     ]));
     const confirm = listed.tools.find((tool) => tool.name === "memora_document_confirm_fields");
@@ -91,5 +100,28 @@ describe("Memora MCP server", () => {
     const serialized = JSON.stringify(result);
     expect(serialized).toContain("handle-1");
     expect(serialized).not.toContain("C:\\private\\passport.jpg");
+  });
+
+  it("keeps fixture verification behind the test scope", async () => {
+    const input = {
+      manifest: {fixtureId: "fixture-1", documentType: "other", fields: [{key: "title", expected: "Synthetic"}]},
+      actualFields: [{key: "title", displayValue: "Synthetic", normalizedValue: "Synthetic", confidence: 0.9}]
+    };
+    const denied = await (await connectTestServer()).client.callTool({
+      name: "memora_document_verify_fixture",
+      arguments: input
+    });
+    expect(denied).toMatchObject({isError: true});
+    expect(JSON.stringify(denied)).toContain("MISSING_SCOPE");
+
+    const fixtureScope: DocumentAgentScope = {
+      ...scope,
+      scopes: new Set([...scope.scopes, "documents:test"])
+    };
+    const allowed = await (await connectTestServer(fixtureScope)).client.callTool({
+      name: "memora_document_verify_fixture",
+      arguments: input
+    });
+    expect(JSON.stringify(allowed)).toContain("fixture-1");
   });
 });
