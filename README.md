@@ -6,8 +6,9 @@ Memora — персональная операционная система дл
 
 ## Статус
 
-Проект находится на этапе архитектурного проектирования. Исходный контекст,
-выбранный стек, границы модулей и поэтапный план уже зафиксированы в документах:
+Foundation реализован: приложение запускается, реальные бесплатные Neon, Clerk
+и Private Blob provisioned через Vercel, а базовые маршруты, темы и RU/EN готовы.
+Исходный контекст и поэтапный план зафиксированы в документах:
 
 - [Продуктовая концепция](docs/product-spec.md)
 - [ADR-0001: платформа и стек](docs/architecture/ADR-0001-platform-and-stack.md)
@@ -50,9 +51,32 @@ model gate и quality gates находятся в [`docs/ai`](docs/ai/WORKFLOW.m
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-ai-governance.ps1
 ```
 
+## Локальный запуск на Windows 11
+
+Требуются Node.js 24 LTS, npm и авторизованный Vercel CLI.
+
+```powershell
+npm install
+vercel link --yes --scope andival-seis-projects --project memora
+vercel env pull apps/web/.env.local --yes
+npm run dev
+```
+
+Приложение откроется на `http://localhost:3000/ru`. Проверки:
+
+```powershell
+npm run check
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-ai-governance.ps1
+```
+
+Миграции используют только direct-подключение `DATABASE_URL_UNPOOLED`:
+
+```powershell
+npm run db:generate
+npm run db:migrate
+```
+
 ## Следующий шаг
 
-Этап Foundation из [дорожной карты](docs/roadmap.md): создать workspace,
-подключить реальные Marketplace-интеграции, собрать design-system shell и
-настроить CI. Для полноценной агентной работы нужен Vercel CLI (`vercel env
-pull`, preview deploys и logs).
+Первый Documents vertical slice из [дорожной карты](docs/roadmap.md): приватная
+загрузка PDF, метаданные, безопасное скачивание и audit trail.

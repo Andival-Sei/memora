@@ -1,0 +1,14 @@
+{
+  "Meta": {"title": "Memora — personal memory", "description": "A private space for documents, finances, and AI."},
+  "Nav": {"home": "Home", "documents": "Documents", "finance": "Finance", "assistant": "Assistant", "settings": "Settings"},
+  "Home": {
+    "eyebrow": "Personal operating system", "hello": "Good evening",
+    "lead": "What matters across documents, money, and deadlines — in one calm stream.",
+    "capture": "Add new", "ask": "Ask Memora", "balance": "Total balance",
+    "month": "this month", "documents": "Documents", "protected": "originals protected",
+    "events": "Upcoming events", "empty": "Confirmed events from your vault will appear here.",
+    "stream": "Memory stream", "streamHint": "Connections and sources will be visible here.",
+    "private": "Private by default", "navigation": "Primary navigation"
+  },
+  "Theme": {"label": "Theme", "light": "Light", "dark": "Dark", "system": "System"}
+}

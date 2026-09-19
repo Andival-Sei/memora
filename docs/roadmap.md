@@ -5,6 +5,10 @@
 
 ## 0. Foundation — 1 неделя
 
+**Статус:** выполнено 2026-09-19. Реальные Vercel Marketplace-интеграции,
+рабочее приложение, миграция Neon, auth boundary, RU/EN shell, темы и CI
+зафиксированы в `main`.
+
 - Создать npm/Turborepo workspace и Next.js 16.3.3 приложение.
 - Подключить Vercel project и provision Clerk, Neon и private Blob через
   Marketplace; выполнить `vercel env pull`.

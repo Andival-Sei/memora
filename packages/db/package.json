@@ -1,0 +1,26 @@
+{
+  "name": "@memora/db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {".": "./src/index.ts", "./schema": "./src/schema.ts"},
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc --noEmit",
+    "db:generate": "dotenv -e ../../.env.local -- drizzle-kit generate",
+    "db:migrate": "dotenv -e ../../.env.local -- drizzle-kit migrate"
+  },
+  "dependencies": {
+    "@vercel/functions": "latest",
+    "drizzle-orm": "latest",
+    "pg": "latest"
+  },
+  "devDependencies": {
+    "@types/pg": "latest",
+    "dotenv-cli": "latest",
+    "drizzle-kit": "latest",
+    "vitest": "latest"
+  }
+}

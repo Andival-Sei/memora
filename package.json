@@ -1,0 +1,34 @@
+{
+  "name": "memora",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "24.x"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev --filter=@memora/web",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "db:generate": "npm run db:generate --workspace=@memora/db",
+    "db:migrate": "npm run db:migrate --workspace=@memora/db"
+  },
+  "devDependencies": {
+    "@vercel/config": "latest",
+    "@eslint/js": "^9.39.0",
+    "@types/node": "latest",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "latest",
+    "globals": "latest",
+    "turbo": "latest",
+    "typescript": "latest",
+    "typescript-eslint": "latest"
+  },
+  "packageManager": "npm@12.0.2"
+}
