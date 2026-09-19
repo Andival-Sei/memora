@@ -89,6 +89,14 @@ Web upload выдаёт одноразовый `stagedAssetHandle`.
 write tool без capability, а Codex policy по умолчанию использует approval
 `writes`.
 
+## Skill для агента
+
+В репозитории есть repo-local Skill
+[`memora-agent`](../../.agents/skills/memora-agent/SKILL.md). Он не добавляет
+полномочий и не заменяет MCP: Skill задаёт агенту безопасный порядок
+`stage → extraction → diff → confirmation`, актуальные tool names и правила
+расширения capability. MCP/CLI остаются источниками исполняемого контракта.
+
 ## Официальные ссылки
 
 - [MCP в Codex: STDIO, Streamable HTTP и config.toml](https://developers.openai.com/es-419/docs/extend/mcp?surface=cli)

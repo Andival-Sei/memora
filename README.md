@@ -44,6 +44,7 @@ model gate и quality gates находятся в [`docs/ai`](docs/ai/WORKFLOW.m
 - [Implementation plan](docs/superpowers/plans/2026-09-18-ai-engineering-system.md)
 - [Когда задачу можно передать Luna](docs/ai/MODEL_ROUTING.md)
 - [Definition of Done](docs/ai/DEFINITION_OF_DONE.md)
+- [Memora Agent Skill для MCP/CLI](.agents/skills/memora-agent/SKILL.md)
 
 Проверка целостности AI-инструкций на Windows:
 
