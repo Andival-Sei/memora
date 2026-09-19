@@ -1,3 +1,4 @@
+import {join, resolve} from "node:path";
 import {describe, expect, it} from "vitest";
 import {
   ApplicationError,
@@ -16,6 +17,9 @@ const scope: DocumentAgentScope = {
 };
 
 const clock = {now: () => new Date("2026-09-19T12:00:00.000Z")};
+const stagingRoot = resolve("memora-staging");
+const stagedFilePath = join(stagingRoot, "passport.jpg");
+const outsideFilePath = join(resolve("outside"), "passport.jpg");
 
 const reader: LocalFileReader = {
   realpath(value) {
@@ -33,7 +37,7 @@ const reader: LocalFileReader = {
 
 function createUseCases(store = createInMemoryDocumentAgentStore()) {
   return createDocumentAgentUseCases({
-    stagingRoot: "C:\\memora-staging",
+    stagingRoot,
     clock,
     reader,
     store,
@@ -72,7 +76,7 @@ describe("document agent application boundary", () => {
 
     const staged = await useCases.stageLocalFile(scope, {
       documentType: "ru-passport",
-      localPath: "C:\\memora-staging\\passport.jpg",
+      localPath: stagedFilePath,
       filename: "folder\\passport.jpg"
     });
 
@@ -85,7 +89,7 @@ describe("document agent application boundary", () => {
     });
     expect(staged).not.toHaveProperty("localPath");
     expect(staged).not.toHaveProperty("bytes");
-    expect(JSON.stringify(staged)).not.toContain("C:\\memora-staging");
+    expect(JSON.stringify(staged)).not.toContain(stagingRoot);
   });
 
   it("rejects a path outside the configured staging root", async () => {
@@ -93,7 +97,7 @@ describe("document agent application boundary", () => {
 
     await expect(useCases.stageLocalFile(scope, {
       documentType: "ru-passport",
-      localPath: "C:\\Users\\freed\\passport.jpg"
+      localPath: outsideFilePath
     })).rejects.toMatchObject({code: "PATH_NOT_ALLOWED"});
   });
 
@@ -101,7 +105,7 @@ describe("document agent application boundary", () => {
     const useCases = createUseCases();
     const staged = await useCases.stageLocalFile(scope, {
       documentType: "ru-passport",
-      localPath: "C:\\memora-staging\\passport.jpg"
+      localPath: stagedFilePath
     });
     const workspace = await useCases.runExtraction(scope, staged.assetHandle);
 
@@ -151,7 +155,7 @@ describe("document agent application boundary", () => {
     const useCases = createUseCases(store);
     const staged = await useCases.stageLocalFile(scope, {
       documentType: "ru-passport",
-      localPath: "C:\\memora-staging\\passport.jpg"
+      localPath: stagedFilePath
     });
     await useCases.runExtraction(scope, staged.assetHandle);
     const confirmation = await useCases.createConfirmation(scope, {
@@ -169,7 +173,7 @@ describe("document agent application boundary", () => {
     const useCases = createUseCases();
     const staged = await useCases.stageLocalFile(scope, {
       documentType: "ru-passport",
-      localPath: "C:\\memora-staging\\passport.jpg"
+      localPath: stagedFilePath
     });
 
     await expect(useCases.getWorkspace({
