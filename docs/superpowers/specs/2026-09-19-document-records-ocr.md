@@ -34,11 +34,25 @@ normalizer, validator, sensitivity и правила отображения. С�
 4. Один record принимает несколько фото/страниц, их можно reorder/remove до
    запуска обработки. Изображения и PDF смешивать можно только если provider
    contract это допускает; UI показывает ограничение.
+   Для веб-загрузки браузер отправляет каждую страницу напрямую в private Blob
+   по короткоживущему токену после серверной проверки владельца записи. Затем
+   аутентифицированный Web API принимает небольшой JSON-запрос финализации,
+   перечитывает private Blob и проверяет MIME, размер и сигнатуру перед фиксацией
+   метаданных; исходные байты не проходят через Vercel Function.
+   Пока OCR-провайдер не прошёл отдельный privacy gate, поля типа показываются
+   как схема ожидаемого распознавания, но приложение не изображает их заполненными.
+   Если API типизированных записей недоступен, каталог и прежние загрузки остаются
+   доступны для просмотра, но новую загрузку typed records UI блокирует до
+   подтверждённой готовности хранилища.
 5. Распознавание заполняет draft-поля. Каждое поле показывает confidence,
    источник (asset/page/bounding box) и кнопку принять/исправить. Низкая
    уверенность никогда не скрывается.
 6. Только явное «Подтвердить данные» переносит draft в canonical fields. AI/OCR
    не перезаписывает подтверждённое значение без отдельного diff и подтверждения.
+7. Файлы из прежней generic PDF-загрузки остаются видимыми и доступными для
+   скачивания в отдельном списке «Ранее загруженные файлы». Они не назначаются
+   типам автоматически; перенос в `document_record` возможен только явным
+   действием пользователя.
 
 ## Domain/persistence
 
@@ -122,8 +136,13 @@ classification/splitting и custom extraction.
 ## Security/privacy
 
 - оригиналы, thumbnails, OCR crops и evidence private/no-store;
+- Upload-token route проверяет Clerk session и принадлежность record текущему
+  vault; финализация повторно проверяет vault-scoped pathname и наличие файла в
+  private Blob;
 - provider получает только минимальные assets конкретного run;
 - secret/provider token server-only;
+- перед production-деплоем зависимости должны пройти
+  `npm audit --omit=dev --audit-level=high`;
 - logs/audit не содержат OCR text, MRZ, images, prompt или provider payload;
 - confirmed field update создаёт diff/audit и требует actor confirmation;
 - export/delete policy должна включать record, assets, drafts, runs и derived

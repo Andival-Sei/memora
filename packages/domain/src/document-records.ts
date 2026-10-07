@@ -188,6 +188,10 @@ export interface PersistedDocumentRecord {
   updatedAt: Date;
 }
 
+export interface PersistedDocumentRecordSummary extends PersistedDocumentRecord {
+  assetCount: number;
+}
+
 export interface PersistedDocumentAsset {
   id: string;
   recordId: string;
@@ -215,7 +219,9 @@ export interface NewDocumentRecordAsset {
 export interface DocumentRecordRepository {
   createRecord(input: Omit<PersistedDocumentRecord, "createdAt" | "updatedAt">): Promise<PersistedDocumentRecord>;
   getRecord(scope: DocumentRecordScope, recordId: string): Promise<PersistedDocumentRecord | null>;
+  listRecords(scope: DocumentRecordScope): Promise<PersistedDocumentRecordSummary[]>;
   listAssets(scope: DocumentRecordScope, recordId: string): Promise<PersistedDocumentAsset[]>;
+  getAsset(scope: DocumentRecordScope, recordId: string, assetId: string): Promise<PersistedDocumentAsset | null>;
   appendAssets(scope: DocumentRecordScope, recordId: string, assets: readonly PersistedDocumentAsset[]): Promise<void>;
 }
 
@@ -261,6 +267,7 @@ export function transitionDocumentRecordStatus(
 }
 
 export interface DocumentRecordService {
+  listRecords(scope: DocumentRecordScope): Promise<PublicDocumentRecord[]>;
   createRecord(scope: DocumentRecordScope, input: {
     documentType: DocumentRecordType;
     title?: string;
@@ -272,6 +279,8 @@ export interface DocumentRecordService {
     assets: readonly NewDocumentRecordAsset[];
   }): Promise<PublicDocumentRecordWorkspace>;
   getWorkspace(scope: DocumentRecordScope, recordId: string): Promise<PublicDocumentRecordWorkspace | null>;
+  getPersistedAsset(scope: DocumentRecordScope, recordId: string, assetId: string): Promise<PersistedDocumentAsset | null>;
+  hasAssetPath(scope: DocumentRecordScope, recordId: string, blobPath: string): Promise<boolean>;
 }
 
 function validateDate(value: string | null | undefined): string | null {
@@ -337,6 +346,11 @@ export function createDocumentRecordService(dependencies: {
   const now = dependencies.now ?? (() => new Date());
 
   return {
+    async listRecords(scope) {
+      const records = await dependencies.repository.listRecords(scope);
+      return records.map((record) => toPublicRecord(record, record.assetCount));
+    },
+
     async createRecord(scope, input) {
       const documentType = documentRecordTypeSchema.safeParse(input.documentType);
       if (!documentType.success) throw new DocumentRecordError("INVALID_DOCUMENT_TYPE");
@@ -398,6 +412,15 @@ export function createDocumentRecordService(dependencies: {
       if (!record) return null;
       const assets = await dependencies.repository.listAssets(scope, recordId);
       return toPublicWorkspace(record, assets.sort((left, right) => left.pageIndex - right.pageIndex));
+    },
+
+    async getPersistedAsset(scope, recordId, assetId) {
+      return dependencies.repository.getAsset(scope, recordId, assetId);
+    },
+
+    async hasAssetPath(scope, recordId, blobPath) {
+      const assets = await dependencies.repository.listAssets(scope, recordId);
+      return assets.some((asset) => asset.blobPath === blobPath);
     }
   };
 }

@@ -8,15 +8,28 @@
     "month": "this month", "documents": "Documents", "protected": "originals protected",
     "events": "Upcoming events", "empty": "Confirmed events from your vault will appear here.",
     "stream": "Memory stream", "streamHint": "Connections and sources will be visible here.",
-    "private": "Private by default", "navigation": "Primary navigation"
+    "private": "Private by default", "navigation": "Primary navigation",
+    "documentTypesTitle": "Documents and IDs", "documentTypesHint": "Choose a type to prepare its fields and page order.",
+    "recordsLabel": "records", "fieldCount": "fields", "needsReview": "to review", "documentsUnavailable": "Saved records could not be loaded; the type catalog is still available."
   },
   "Documents": {
     "eyebrow": "Memora / Personal vault", "title": "Documents",
-    "description": "Keep important PDFs private — originals are available only to you.",
-    "privateLabel": "Private", "chooseFile": "Choose PDF", "upload": "Upload",
-    "allowed": "PDF up to 10 MB", "empty": "No documents yet", "loading": "Loading documents…",
-    "uploading": "Saving…", "success": "Document saved", "download": "Download",
-    "error": "We could not save the document", "invalidFile": "Choose a PDF file"
+    "description": "Each document has its own type, fields, and pages. Originals are available only to you.",
+    "privateLabel": "Private", "chooseFile": "Choose pages", "upload": "Upload",
+    "allowed": "JPG, PNG, or PDF · up to 10 MB per page", "empty": "No documents yet", "loading": "Loading records…",
+    "uploading": "Saving…", "success": "Pages saved", "download": "Download",
+    "error": "We could not save the document", "invalidFile": "This file format is not supported for this document type",
+    "selectType": "Choose a document type", "typeHint": "Each type has its own field list. Add up to five photos or PDF pages.",
+    "recordsLabel": "records", "fieldCount": "fields", "fieldsTitle": "Document fields", "fieldsNotice": "Fields are based on the selected document type.",
+    "pagesTitle": "Document pages", "choosePages": "Add photos or PDF", "pageLabel": "Page", "removePage": "Remove page",
+    "movePageUp": "Move page up", "movePageDown": "Move page down", "savePages": "Save pages", "savingPages": "Uploading pages…",
+    "openRecord": "Open", "noRecords": "No records yet", "statusEmpty": "Not recognized", "statusProcessing": "Processing",
+    "statusNeedsReview": "Needs review", "statusConfirmed": "Confirmed", "statusFailed": "Processing failed", "statusExpired": "Expired",
+    "listUnavailable": "Records could not be loaded. The type catalog is still available.", "pageLimit": "A record can contain no more than five pages.",
+    "fileLimit": "Each page must be no larger than 10 MB.", "loadingRecord": "Opening document…", "recognizedLater": "OCR is not connected yet: fields are blank and no values are fabricated.",
+    "previousUploadsTitle": "Previously uploaded files", "previousUploadsHint": "Kept separate from records and not classified automatically.",
+    "untypedDocument": "No document type", "previousUploadsUnavailable": "Previously uploaded files could not be loaded.",
+    "uploadUnavailable": "Page uploads are unavailable until document storage is ready."
   },
   "Theme": {"label": "Theme", "light": "Light", "dark": "Dark", "system": "System"}
 }

@@ -29,9 +29,19 @@ function createRepository(): DocumentRecordRepository {
       if (!record || record.vaultId !== requestedScope.vaultId) return Promise.resolve(null);
       return Promise.resolve(record);
     },
+    listRecords(requestedScope: DocumentRecordScope) {
+      return Promise.resolve([...records.values()]
+        .filter((record) => record.vaultId === requestedScope.vaultId)
+        .map((record) => ({...record, assetCount: (assets.get(record.id) ?? []).length})));
+    },
     listAssets(requestedScope: DocumentRecordScope, recordId: string) {
       const record = records.get(recordId);
       return Promise.resolve(record?.vaultId === requestedScope.vaultId ? [...(assets.get(recordId) ?? [])] : []);
+    },
+    getAsset(requestedScope: DocumentRecordScope, recordId: string, assetId: string) {
+      const record = records.get(recordId);
+      if (!record || record.vaultId !== requestedScope.vaultId) return Promise.resolve(null);
+      return Promise.resolve((assets.get(recordId) ?? []).find((item) => item.id === assetId) ?? null);
     },
     appendAssets(requestedScope: DocumentRecordScope, recordId: string, newAssets: readonly PersistedDocumentAsset[]) {
       const record = records.get(recordId);
@@ -83,6 +93,20 @@ describe("document type registry", () => {
 });
 
 describe("document record intake", () => {
+  it("lists public summaries only from the requested vault", async () => {
+    let nextId = 0;
+    const service = createDocumentRecordService({repository: createRepository(), createId: (prefix) => `${prefix}-${++nextId}`});
+    const ownRecord = await service.createRecord(scope, {documentType: "ru-passport"});
+    await service.createRecord(otherScope, {documentType: "contract"});
+
+    const listed = await service.listRecords(scope);
+
+    expect(listed).toHaveLength(1);
+    expect(listed[0]).toMatchObject({id: ownRecord.id, documentType: "ru-passport", assetCount: 0});
+    expect(listed[0]).not.toHaveProperty("vaultId");
+    expect(listed[0]).not.toHaveProperty("blobPath");
+  });
+
   it("creates a typed record and appends ordered multi-page assets without private fields", async () => {
     const repository = createRepository();
     const service = createDocumentRecordService({repository, createId: (prefix) => `${prefix}-1`});

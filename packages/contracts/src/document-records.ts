@@ -100,3 +100,39 @@ export const publicDocumentRecordWorkspaceSchema = publicDocumentRecordSchema.ex
 });
 
 export type PublicDocumentRecordWorkspace = z.infer<typeof publicDocumentRecordWorkspaceSchema>;
+
+export const documentRecordCreateInputSchema = z.object({
+  documentType: documentRecordTypeSchema,
+  title: z.string().trim().min(1).max(200).optional()
+}).strict();
+
+export type DocumentRecordCreateInput = z.infer<typeof documentRecordCreateInputSchema>;
+
+export const documentRecordListResponseSchema = z.object({
+  records: z.array(publicDocumentRecordSchema).max(100)
+});
+
+export const documentRecordCreateResponseSchema = z.object({record: publicDocumentRecordSchema});
+export const documentRecordWorkspaceResponseSchema = z.object({workspace: publicDocumentRecordWorkspaceSchema});
+
+export const documentRecordUploadTicketRequestSchema = z.object({
+  contentType: documentAssetContentTypeSchema
+}).strict();
+
+export const documentRecordUploadTicketResponseSchema = z.object({
+  ticket: z.object({
+    pathname: z.string().min(1).max(512)
+      .refine((pathname) => !pathname.startsWith("http") && !pathname.startsWith("/") && !pathname.includes("..")),
+    contentType: documentAssetContentTypeSchema,
+    maximumSizeInBytes: z.number().int().positive().max(10 * 1024 * 1024)
+  }).strict()
+}).strict();
+
+export const documentRecordFinalizeAssetRequestSchema = z.object({
+  pathname: z.string().min(1).max(512)
+    .refine((pathname) => !pathname.startsWith("http") && !pathname.startsWith("/") && !pathname.includes("..")),
+  contentType: documentAssetContentTypeSchema
+}).strict();
+
+export type DocumentRecordUploadTicketRequest = z.infer<typeof documentRecordUploadTicketRequestSchema>;
+export type DocumentRecordUploadTicketResponse = z.infer<typeof documentRecordUploadTicketResponseSchema>;

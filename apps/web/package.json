@@ -12,6 +12,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@memora/application": "*",
     "@clerk/nextjs": "latest",
     "@memora/contracts": "*",
     "@memora/db": "*",
@@ -19,7 +20,7 @@
     "@memora/ui": "*",
     "@vercel/blob": "latest",
     "motion": "latest",
-    "next": "16.3.3",
+    "next": "16.4.0",
     "next-intl": "latest",
     "next-themes": "latest",
     "react": "19.3.0",

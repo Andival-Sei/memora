@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, it, vi} from "vitest";
 import {del, get, put} from "@vercel/blob";
-import {createPrivateBlobStore} from "./blob-storage";
+import {createPrivateBlobStore, getPrivateBlobAsset} from "./blob-storage";
 
 vi.mock("@vercel/blob", () => ({
   del: vi.fn(),
@@ -33,7 +33,11 @@ describe("private Blob adapter", () => {
 
   it("reads without cache and never converts a private blob into a public URL", async () => {
     const body = new ReadableStream<Uint8Array>();
-    vi.mocked(get).mockResolvedValue({statusCode: 200, stream: body} as never);
+    vi.mocked(get).mockResolvedValue({
+      statusCode: 200,
+      stream: body,
+      blob: {contentType: "application/pdf", size: 24}
+    } as never);
     const store = createPrivateBlobStore();
 
     await expect(store.get("vaults/vault-1/documents/document-1.pdf")).resolves.toEqual({body});
@@ -43,8 +47,22 @@ describe("private Blob adapter", () => {
     );
   });
 
+  it("returns only private asset metadata and its stream, never a Blob URL", async () => {
+    const body = new ReadableStream<Uint8Array>();
+    vi.mocked(get).mockResolvedValue({
+      statusCode: 200,
+      stream: body,
+      blob: {url: "https://blob.invalid/private", contentType: "image/jpeg", size: 15}
+    } as never);
+
+    const result = await getPrivateBlobAsset("vaults/vault-1/document-records/record-1/page.jpg");
+
+    expect(result).toEqual({body, contentType: "image/jpeg", sizeBytes: 15});
+    expect(result).not.toHaveProperty("url");
+  });
+
   it("treats a conditional 304 or missing stream as unavailable", async () => {
-    vi.mocked(get).mockResolvedValue({statusCode: 304, stream: null} as never);
+    vi.mocked(get).mockResolvedValue({statusCode: 304, stream: null, blob: {contentType: null, size: null}} as never);
     await expect(createPrivateBlobStore().get("missing.pdf")).resolves.toBeNull();
   });
 

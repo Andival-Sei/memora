@@ -6,6 +6,7 @@ import {notFound} from "next/navigation";
 import {ThemeProvider} from "@/components/theme-provider";
 import {isLocale, locales} from "@/lib/i18n/routing";
 import "../globals.css";
+import "../document-records.css";
 
 export function generateStaticParams() { return locales.map((locale) => ({locale})); }
 export async function generateMetadata({params}: {params: Promise<{locale: string}>}): Promise<Metadata> {

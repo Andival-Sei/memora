@@ -3,15 +3,28 @@ import {notFound} from "next/navigation";
 import {AppShell} from "@/components/app-shell";
 import {DocumentsWorkspace, type DocumentsCopy} from "@/components/documents-workspace";
 import {isLocale} from "@/lib/i18n/routing";
+import {listDocumentTypeDefinitions} from "@memora/domain";
+import {documentRecordTypeSchema} from "@memora/contracts";
 
 const navKeys = ["home", "documents", "finance", "assistant", "settings"] as const;
 const homeKeys = ["eyebrow", "hello", "lead", "capture", "ask", "balance", "month", "documents", "protected", "events", "empty", "stream", "streamHint", "private", "navigation"] as const;
-const documentKeys = ["eyebrow", "title", "description", "privateLabel", "chooseFile", "upload", "allowed", "empty", "loading", "uploading", "success", "download", "error", "invalidFile"] as const;
+const documentKeys = [
+  "eyebrow", "title", "description", "privateLabel", "chooseFile", "upload", "allowed", "empty", "loading", "uploading", "success", "download", "error", "invalidFile",
+  "selectType", "typeHint", "recordsLabel", "fieldCount", "fieldsTitle", "fieldsNotice", "pagesTitle", "choosePages", "pageLabel", "removePage", "movePageUp", "movePageDown",
+  "savePages", "savingPages", "openRecord", "noRecords", "statusEmpty", "statusProcessing", "statusNeedsReview", "statusConfirmed", "statusFailed", "statusExpired",
+  "listUnavailable", "pageLimit", "fileLimit", "loadingRecord", "recognizedLater", "previousUploadsTitle",
+  "previousUploadsHint", "untypedDocument", "previousUploadsUnavailable", "uploadUnavailable"
+] as const;
 
-export default async function DocumentsPage({params}: {params: Promise<{locale: string}>}) {
+export default async function DocumentsPage({params, searchParams}: {
+  params: Promise<{locale: string}>;
+  searchParams: Promise<{type?: string}>;
+}) {
   const {locale: rawLocale} = await params;
   if (!isLocale(rawLocale)) notFound();
   setRequestLocale(rawLocale);
+  const query = await searchParams;
+  const initialType = documentRecordTypeSchema.safeParse(query.type);
   const [nav, home, documents] = await Promise.all([
     getTranslations("Nav"),
     getTranslations("Home"),
@@ -28,8 +41,11 @@ export default async function DocumentsPage({params}: {params: Promise<{locale: 
     }}
   >
     <DocumentsWorkspace
+      key={initialType.success ? initialType.data : "catalog"}
       locale={rawLocale}
       copy={Object.fromEntries(documentKeys.map((key) => [key, documents(key)])) as DocumentsCopy}
+      definitions={listDocumentTypeDefinitions()}
+      initialType={initialType.success ? initialType.data : null}
     />
   </AppShell>;
 }

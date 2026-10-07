@@ -10,6 +10,6 @@
     "test": "vitest run",
     "build": "tsc --noEmit"
   },
-  "dependencies": {"zod": "latest"},
+  "dependencies": {"@memora/contracts": "*", "@memora/domain": "*", "zod": "latest"},
   "devDependencies": {"@types/node": "latest", "vitest": "latest"}
 }

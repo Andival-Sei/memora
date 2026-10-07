@@ -19,8 +19,9 @@ export function AppShell({
   locale,
   activeNav = "home",
   pageTitle,
+  homeExtra,
   children
-}: {copy: Copy; locale: Locale; activeNav?: NavKey; pageTitle?: string; children?: ReactNode}) {
+}: {copy: Copy; locale: Locale; activeNav?: NavKey; pageTitle?: string; homeExtra?: ReactNode; children?: ReactNode}) {
   const items = Object.keys(icons) as NavKey[];
   return <div className="shell">
     <aside aria-label={copy.home.navigation} className="sidebar">
@@ -33,9 +34,10 @@ export function AppShell({
         <section className="hero" aria-labelledby="hero-title"><div><h2 id="hero-title">{copy.home.lead}</h2><div className="actions"><button className="button button--primary" type="button"><span aria-hidden="true">＋</span>{copy.home.capture}</button><button className="button button--ai" type="button"><span aria-hidden="true">✦</span>{copy.home.ask}</button></div></div><div className="orb" aria-hidden="true"><span /><span /><span /></div></section>
         <section className="metrics" aria-label="Overview">
           <article className="metric"><p>{copy.home.balance}</p><strong className="money">—</strong><span className="metric__hint">{copy.home.month}</span></article>
-          <article className="metric"><p>{copy.home.documents}</p><strong>0</strong><span className="metric__hint"><i className="status-dot" />{copy.home.protected}</span></article>
+          <article className="metric"><p>{copy.home.documents}</p><strong>—</strong><span className="metric__hint"><i className="status-dot" />{copy.home.protected}</span></article>
           <article className="metric metric--wide"><p>{copy.home.events}</p><div className="empty-line"><span>○</span>{copy.home.empty}</div></article>
         </section></>}
+      {!children && homeExtra}
     </main>
     <aside aria-label={copy.home.stream} className="stream"><div className="stream__heading"><p className="eyebrow">Memory stream</p><h2>{copy.home.stream}</h2><span className="privacy"><i />{copy.home.private}</span></div><div className="stream__line"><span className="stream__node stream__node--active" /><span className="stream__node" /><span className="stream__node" /></div><p className="stream__empty">{copy.home.streamHint}</p></aside>
     <nav className="mobile-nav" aria-label="Mobile navigation">{items.slice(0, 4).map((item) => <a aria-current={item === activeNav ? "page" : undefined} href={paths[item](locale)} key={item}><span aria-hidden="true">{icons[item]}</span><small>{copy.nav[item]}</small></a>)}</nav>

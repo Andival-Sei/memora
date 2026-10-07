@@ -7,6 +7,16 @@ export function isPublicPath(pathname: string): boolean {
   return isLocale(locale ?? "") && (segment === "sign-in" || segment === "sign-up");
 }
 
+export function isSameOriginRequest(request: Pick<Request, "url" | "headers">): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin) return false;
+  try {
+    return new URL(origin).origin === new URL(request.url).origin;
+  } catch {
+    return false;
+  }
+}
+
 export function getSignInPath(pathname: string): string {
   const [, locale] = pathname.split("/");
   return `/${isLocale(locale ?? "") ? locale : defaultLocale}/sign-in`;

@@ -1,9 +1,10 @@
-import {and, asc, eq} from "drizzle-orm";
+import {and, asc, count, desc, eq} from "drizzle-orm";
 import type {
   DocumentRecordRepository,
   DocumentRecordScope,
   PersistedDocumentAsset,
-  PersistedDocumentRecord
+  PersistedDocumentRecord,
+  PersistedDocumentRecordSummary
 } from "@memora/domain";
 import {getDb} from "./index";
 import {documentAssets, documentRecords} from "./schema";
@@ -70,6 +71,24 @@ export function createDocumentRecordRepository(database?: Database): DocumentRec
       return row ? mapRecord(row) : null;
     },
 
+    async listRecords(scope) {
+      const rows = await db
+        .select({record: documentRecords, assetCount: count(documentAssets.id)})
+        .from(documentRecords)
+        .leftJoin(documentAssets, and(
+          eq(documentAssets.recordId, documentRecords.id),
+          eq(documentAssets.vaultId, documentRecords.vaultId)
+        ))
+        .where(eq(documentRecords.vaultId, scope.vaultId))
+        .groupBy(documentRecords.id)
+        .orderBy(desc(documentRecords.updatedAt))
+        .limit(100);
+      return rows.map((row): PersistedDocumentRecordSummary => ({
+        ...mapRecord(row.record),
+        assetCount: Number(row.assetCount)
+      }));
+    },
+
     async listAssets(scope: DocumentRecordScope, recordId) {
       const rows = await db
         .select()
@@ -77,6 +96,19 @@ export function createDocumentRecordRepository(database?: Database): DocumentRec
         .where(and(eq(documentAssets.vaultId, scope.vaultId), eq(documentAssets.recordId, recordId)))
         .orderBy(asc(documentAssets.pageIndex));
       return rows.map(mapAsset);
+    },
+
+    async getAsset(scope: DocumentRecordScope, recordId, assetId) {
+      const [row] = await db
+        .select()
+        .from(documentAssets)
+        .where(and(
+          eq(documentAssets.vaultId, scope.vaultId),
+          eq(documentAssets.recordId, recordId),
+          eq(documentAssets.id, assetId)
+        ))
+        .limit(1);
+      return row ? mapAsset(row) : null;
     },
 
     async appendAssets(scope: DocumentRecordScope, recordId, assets) {
