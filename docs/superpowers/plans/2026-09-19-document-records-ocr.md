@@ -4,7 +4,7 @@
 
 - Goal: заменить generic document list на type-first records, multi-page intake
   и безопасные OCR drafts.
-- Class: architectural, Tier A (schema, private PII processing, OCR provider,
+- Class: architectural (schema, private PII processing, OCR provider,
   public UI/API contracts).
 - Spec: `docs/superpowers/specs/2026-09-19-document-records-ocr.md`.
 - Branch: `main`; direct commits, no pull request.
@@ -63,9 +63,8 @@
 - Goal: пользователь видит типизированный каталог документов на Home и Documents,
   создаёт запись конкретного типа и сохраняет до пяти упорядоченных страниц в
   private Blob с metadata в document_records/document_assets.
-- Class: architectural, Tier A (authenticated upload API, private PII path,
+- Class: architectural (authenticated upload API, private PII path,
   application/domain/database contracts and production UI).
-- Model tier: A.
 - Spec: `docs/superpowers/specs/2026-09-19-document-records-ocr.md`, разделы UX,
   Domain/persistence и Security/privacy.
 - Plan task: Task 2.

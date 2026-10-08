@@ -31,7 +31,7 @@
 ## Task packet: общий контракт и capability boundary
 
 - Goal: вынести transport-independent DTO/use-case boundary для document agent workflows.
-- Class: architectural, Tier A.
+- Class: architectural.
 - Spec: этот plan и `docs/superpowers/specs/2026-09-19-mcp-cli-codex-integration.md`.
 - Plan task: Task 1.
 - Owner module: `packages/application`.

@@ -10,7 +10,7 @@ Task packet — исполнимый контракт одного атомар�
 
 - Goal: <одно наблюдаемое предложение>
 - Class: <trivial | bounded | architectural>
-- Model tier: <A | B | C>
+- Execution context: <необязательно; среда/инструменты/effort, только справочно>
 - Spec: <путь и конкретный раздел | not-applicable с причиной>
 - Plan task: <путь и номер задачи | not-applicable с причиной>
 - Owner module: <один модуль>

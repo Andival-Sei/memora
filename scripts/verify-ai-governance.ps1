@@ -20,6 +20,8 @@ $requiredFiles = @(
     'docs/ai/COMMIT_CONVENTIONS.md'
     'docs/superpowers/specs/2026-09-18-ai-engineering-system-design.md'
     'docs/superpowers/plans/2026-09-18-ai-engineering-system.md'
+    'docs/superpowers/specs/2026-10-08-model-neutral-ai-workflow.md'
+    'docs/superpowers/plans/2026-10-08-model-neutral-ai-workflow.md'
 )
 
 foreach ($relativePath in $requiredFiles) {
@@ -30,12 +32,36 @@ foreach ($relativePath in $requiredFiles) {
 
 $requiredHeadings = @{
     'AGENTS.md' = @('## 1. Начало каждой задачи', '## 6. Completion gate', '## 8. Stop conditions')
-    'docs/ai/MODEL_ROUTING.md' = @('## Luna gate', '## Review результата Luna')
+    'docs/ai/MODEL_ROUTING.md' = @('## Модель не является допуском', '## Review по риску')
     'docs/ai/WORKFLOW.md' = @('## RED', '## Direct-main commit и push')
     'docs/ai/TASK_PACKET.md' = @('## Acceptance criteria', '## TDD evidence')
     'docs/ai/QUALITY_GATES.md' = @('## Gates по типу изменения', '## Baseline красный')
     'docs/ai/DEFINITION_OF_DONE.md' = @('## Correctness', '## Delivery')
     'docs/ai/COMMIT_CONVENTIONS.md' = @('## Русское описание', '## Breaking changes')
+}
+
+$activePolicyFiles = @(
+    'AGENTS.md'
+    'README.md'
+    'docs/ai/MODEL_ROUTING.md'
+    'docs/ai/WORKFLOW.md'
+    'docs/ai/TASK_PACKET.md'
+    'docs/ai/QUALITY_GATES.md'
+    'docs/ai/SECURITY_AND_PRIVACY.md'
+    'docs/superpowers/plans/2026-09-19-documents.md'
+    'docs/superpowers/plans/2026-09-19-mcp-cli-codex-integration.md'
+    'docs/superpowers/plans/2026-09-19-document-records-ocr.md'
+)
+$obsoleteModelGatePattern = '(?i)(model gate|luna gate|tier\s+[abc]\b|tier\s+a/b|tier\s+a review|сильн(ая|ой) модель)'
+foreach ($relativePath in $activePolicyFiles) {
+    if (-not (Test-Path -LiteralPath $relativePath -PathType Leaf)) {
+        continue
+    }
+
+    $matches = Select-String -LiteralPath $relativePath -Pattern $obsoleteModelGatePattern
+    foreach ($match in $matches) {
+        $errors.Add("Obsolete model eligibility gate in $relativePath`:$($match.LineNumber): $($match.Line.Trim())")
+    }
 }
 
 foreach ($entry in $requiredHeadings.GetEnumerator()) {

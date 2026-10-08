@@ -1,7 +1,8 @@
 # Security и privacy contract
 
-Memora обрабатывает документы, финансовые данные и AI-контекст. Любое изменение
-этих областей относится минимум к Tier A review, даже если diff мал.
+Memora обрабатывает документы, финансовые данные и AI-контекст. Для изменений в
+этих областях обязательны применимые security/privacy проверки независимо от
+размера diff и выбранной модели.
 
 ## Identity и tenant isolation
 
@@ -67,9 +68,10 @@ token и полный financial payload туда не входят.
 Security event и product analytics разделены. Redaction тестируется на
 представительных секретах и персональных данных.
 
-## Обязательная эскалация
+## Углублённый security review
 
-Остановись до кода и передай Tier A, если задача меняет:
+Для изменений следующих границ до реализации зафиксируй threat/abuse cases,
+отрицательные тесты и rollback в task packet:
 
 - identity/session/token/scopes;
 - tenant isolation или data ownership;
@@ -78,6 +80,10 @@ Security event и product analytics разделены. Redaction тестиру
 - upload parser/sandbox;
 - AI permissions, citations, tools или confirmation;
 - audit/redaction и передачу данных третьей стороне.
+
+Сам факт изменения такой границы не требует передачи другой модели. Остановись,
+только если остаётся невыбранное security/product решение, отсутствуют credentials
+или полномочия, либо нет безопасного способа проверки и отката.
 
 ## Security review checklist
 

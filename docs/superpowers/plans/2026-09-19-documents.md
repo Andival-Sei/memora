@@ -4,8 +4,8 @@
 
 - Goal: реализовать безопасный PDF-only documents vertical slice с private Blob,
   Neon metadata, audit и RU/EN upload/list/download UI.
-- Class: architectural, Tier A (private upload, auth/security boundary, schema,
-  provider integration, public API).
+- Class: architectural (private upload, auth/security boundary, schema, provider
+  integration, public API).
 - Spec: `docs/superpowers/specs/2026-09-19-documents-design.md`.
 - Branch: `main`; commit directly, no pull request.
 - Preserved changes: перед началом рабочее дерево чистое; посторонние файлы не

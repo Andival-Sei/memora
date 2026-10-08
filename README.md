@@ -38,11 +38,11 @@ Foundation реализован: приложение запускается, р
 ## AI-разработка
 
 Любой AI-агент начинает с [AGENTS.md](AGENTS.md). Подробный процесс, task packet,
-model gate и quality gates находятся в [`docs/ai`](docs/ai/WORKFLOW.md).
+маршрутизация по риску и quality gates находятся в [`docs/ai`](docs/ai/WORKFLOW.md).
 
 - [Спецификация AI engineering system](docs/superpowers/specs/2026-09-18-ai-engineering-system-design.md)
 - [Implementation plan](docs/superpowers/plans/2026-09-18-ai-engineering-system.md)
-- [Когда задачу можно передать Luna](docs/ai/MODEL_ROUTING.md)
+- [Маршрутизация по сложности и риску](docs/ai/MODEL_ROUTING.md)
 - [Definition of Done](docs/ai/DEFINITION_OF_DONE.md)
 - [Memora Agent Skill для MCP/CLI](.agents/skills/memora-agent/SKILL.md)
 

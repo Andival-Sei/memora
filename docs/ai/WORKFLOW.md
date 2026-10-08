@@ -44,7 +44,8 @@ schema, public API, auth/security, интеграция, MCP/AI capability. До
 1. Заполни `docs/ai/TASK_PACKET.md` в plan/task context.
 2. Зафиксируй сигнатуры и owners данных до реализации.
 3. Для architectural-задачи свяжи packet с утверждёнными spec и plan.
-4. Пройди model gate.
+4. Используй `MODEL_ROUTING.md` как необязательную подсказку по декомпозиции.
+   Название модели не является условием допуска или продолжения работы.
 
 **Готово:** другой исполнитель может выполнить packet без продуктового выбора.
 

@@ -1,5 +1,10 @@
 # AI Engineering System Implementation Plan
 
+> **Историческое решение:** проверки и handoff по tier/названию модели в этом
+> архивном плане superseded текущей политикой
+> [`docs/ai/MODEL_ROUTING.md`](../../ai/MODEL_ROUTING.md). Не применять их как
+> gate; остальные инженерные проверки плана сохраняют силу.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use
 > `superpowers:executing-plans` to implement this plan task-by-task. Steps use
 > checkbox (`- [ ]`) syntax for tracking.

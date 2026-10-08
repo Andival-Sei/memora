@@ -15,8 +15,9 @@
    файлов в task packet из [docs/ai/TASK_PACKET.md](docs/ai/TASK_PACKET.md).
 5. Классифицируй изменение как trivial, bounded или architectural по
    [workflow](docs/ai/WORKFLOW.md).
-6. Пройди [model gate](docs/ai/MODEL_ROUTING.md). Если текущая модель не
-   допускается, остановись до изменения файлов и запроси более сильную модель.
+6. Используй [маршрутизацию по риску](docs/ai/MODEL_ROUTING.md) как подсказку
+   для декомпозиции и проверок. Название модели не ограничивает выполнение;
+   применяются одинаковые контракт, security, quality и authorization gates.
 
 ## 2. Обязательный цикл
 
@@ -106,7 +107,7 @@ Production-код без наблюдаемого RED запрещён. Искл
 
 - Любая реализация или исправление: открой [WORKFLOW.md](docs/ai/WORKFLOW.md) и
   [TASK_PACKET.md](docs/ai/TASK_PACKET.md).
-- Выбор модели или передача задачи Luna: открой
+- Декомпозиция по риску и выбор проверок: открой
   [MODEL_ROUTING.md](docs/ai/MODEL_ROUTING.md).
 - Изменение модулей/imports/public API/БД: открой
   [ARCHITECTURE_GUARDRAILS.md](docs/ai/ARCHITECTURE_GUARDRAILS.md).
