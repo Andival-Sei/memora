@@ -203,6 +203,73 @@
   cleaned through the document deletion workflow when that is implemented.
 
 
+## Task 2.1 — activate the already-deployed typed upload
+
+### Task packet
+
+- Goal: enable the existing multi-page upload by applying only the committed
+  `0002_flawless_darkhawk.sql` migration to the production default Neon branch
+  through the project's Drizzle migration runner, preserving migration history.
+- Class: architectural (production schema migration and private document flow).
+- Spec: `docs/superpowers/specs/2026-09-19-document-records-ocr.md`, sections
+  Domain/persistence, UX, Security/privacy and Acceptance criteria.
+- Plan task: Task 2.1.
+- Owner module: `packages/db`; Web routes remain transport and use the existing
+  application and private Blob adapters.
+- Allowed files: this plan only. Do not edit application/schema/migration code
+  unless a test demonstrates a code defect and a new packet is written first.
+- External scope: Neon project `falling-frost-35169298`, default branch only;
+  existing Vercel deployment and already-configured environment variable names.
+- Out of scope: OCR/provider setup, filling document fields, real personal
+  documents, new schema or env changes, changing/deploying app code.
+- Interfaces: existing `document_records`, `document_assets` and
+  `drizzle.__drizzle_migrations`; UI/API availability is based on these tables.
+- Acceptance:
+  - [x] The exact committed migration succeeds on a temporary Neon branch.
+  - [x] Production applies migration index 2 through `npm run db:migrate`; its
+    journal entry and both tables exist on the production default branch.
+  - [x] Existing user/document tables and rows are untouched; no personal or
+    synthetic document record is persisted as part of migration verification.
+  - [x] The deployed signed-in Documents UI can load the typed-record catalog
+    without `DOCUMENT_RECORDS_UNAVAILABLE`.
+  - [x] `git diff --check` and applicable project verification pass.
+- TDD evidence: baseline confirms both typed tables are absent and the migration
+  journal contains only indices 0 and 1. RED is the current production API's
+  unavailable response for typed records. Dry-run on a Neon temporary branch,
+  then apply the same Drizzle migration on production and verify API readiness.
+- Risk and recovery: migration is additive and creates the already-reviewed
+  tables/indexes/constraints. Stop on any schema mismatch, unexpected pending
+  migration, or inability to target the default branch. Never reset production
+  or edit migration history manually.
+- Commit: `docs(records): зафиксировать включение загрузки документов` for the
+  task evidence; database migration is tracked separately in Drizzle history.
+
+### Execution record
+
+- Status: completed on 2026-10-08 after the user's explicit request to make the
+  existing upload work.
+- Baseline on Neon default branch `br-purple-sky-b17x7gjf`: `document_records`
+  and `document_assets` were absent; Drizzle journal contained only migration
+  indices 0 and 1.
+- Migration rehearsal: `0002_flawless_darkhawk.sql` created both tables, foreign
+  keys and indexes on a temporary branch; both tables had zero rows. The
+  temporary branch was deleted without applying its DDL to production.
+- Production apply: `vercel env run -e production -- npm run db:migrate` exited 0
+  and reported successful migrations. The production Drizzle journal now has
+  index 2; both typed-document tables exist and contain zero records/assets.
+- Provider check: the connected Vercel Blob store is `private` and is connected
+  to the Memora project in production; required DB, Blob and Clerk environment
+  variables are present (values were not printed or changed).
+- Live UI: the signed-in Documents page now loads the typed-record catalog,
+  `DOCUMENT_RECORDS_UNAVAILABLE` is gone, and “Добавить фото или PDF” is enabled.
+- Verification: targeted `DocumentsWorkspace` tests passed (6/6); `npm run check`
+  passed (lint, typecheck, all package tests, production build); AI governance
+  verification and `git diff --check` passed.
+- No production test file or record was created. The actual Blob transfer was
+  not exercised against the personal production vault because the product has
+  no record deletion flow yet. OCR and automatic field population remain out of
+  scope and explicitly unavailable.
+
 ## Task 3 — OCR provider port, benchmark and draft extraction
 
 ### Gate before provider-specific code
